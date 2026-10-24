@@ -1,0 +1,18 @@
+# Archivos locales y credenciales
+.env
+.env.*
+!.env.example
+pgpass.conf
+.pgpass
+*.log
+*.tmp
+__pycache__/
+
+# Revision de documentos y pruebas internas
+.revision_fuentes/
+.codex-test/
+
+# Archivos temporales de Office y Windows
+~$*
+Thumbs.db
+desktop.ini
