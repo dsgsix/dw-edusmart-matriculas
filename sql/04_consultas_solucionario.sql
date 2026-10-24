@@ -1,6 +1,3 @@
--- Consultas del solucionario. Solo lectura; pueden repetirse.
--- En pgAdmin seleccionar cada SELECT completo y ejecutar por separado.
-
 -- Ejercicio 1.1: desglose por estudiante, provincia y facultad.
 SELECT
     e.nombre_estudiante,
@@ -30,7 +27,6 @@ GROUP BY f.nombre_facultad
 ORDER BY recaudacion_total_usd DESC;
 
 -- Ejercicio 2.2: cursos con promedio de descuento >= 5%.
--- AVG responde al promedio simple por inscripcion solicitado.
 SELECT
     c.nombre_curso,
     AVG(m.porcentaje_descuento_beca) AS promedio_descuento_pct

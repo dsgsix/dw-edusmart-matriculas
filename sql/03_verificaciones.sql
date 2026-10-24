@@ -1,10 +1,7 @@
--- Solo lectura. Puede repetirse.
--- En pgAdmin ejecutar cada bloque SELECT por separado para fotografiarlo.
-
--- V1. Conexion: se espera db_edusmart_uti.
+-- V1. Conexion y version.
 SELECT current_database() AS base_actual, version() AS version_postgresql;
 
--- V2. Tablas: se esperan 5, cuatro dimensiones y una tabla de hechos.
+-- V2. Tablas del esquema dimensional.
 SELECT table_name
 FROM information_schema.tables
 WHERE table_schema = 'public'
@@ -15,8 +12,7 @@ WHERE table_schema = 'public'
   )
 ORDER BY table_name;
 
--- V3. Claves SERIAL: se esperan 3 columnas integer con default nextval(...).
--- sk_tiempo se proporciona como AAAAMMDD; no usa SERIAL.
+-- V3. Claves sustitutas.
 SELECT table_name, column_name, data_type, column_default
 FROM information_schema.columns
 WHERE table_schema = 'public'
@@ -27,7 +23,7 @@ WHERE table_schema = 'public'
   )
 ORDER BY table_name;
 
--- V4. Claves foraneas: se esperan 4 restricciones de tipo f.
+-- V4. Claves foraneas.
 SELECT conname AS restriccion,
        pg_get_constraintdef(oid) AS definicion
 FROM pg_constraint
@@ -35,21 +31,21 @@ WHERE conrelid = 'public.fact_matricula'::regclass
   AND contype = 'f'
 ORDER BY conname;
 
--- V5. Clave primaria compuesta: se espera 1 restriccion de tipo p.
+-- V5. Clave primaria compuesta.
 SELECT conname AS restriccion,
        pg_get_constraintdef(oid) AS definicion
 FROM pg_constraint
 WHERE conrelid = 'public.fact_matricula'::regclass
   AND contype = 'p';
 
--- V6. Indices: se esperan 3 en hechos, incluidos el de su PK y 2 explicitos.
+-- V6. Indices de la tabla de hechos.
 SELECT indexname, indexdef
 FROM pg_indexes
 WHERE schemaname = 'public'
   AND tablename = 'fact_matricula'
 ORDER BY indexname;
 
--- V7. Carga inicial: se espera 1 fila en cada tabla.
+-- V7. Conteo de registros.
 SELECT 'dim_estudiante' AS tabla, COUNT(*) AS filas FROM public.dim_estudiante
 UNION ALL
 SELECT 'dim_curso', COUNT(*) FROM public.dim_curso
@@ -61,7 +57,7 @@ UNION ALL
 SELECT 'fact_matricula', COUNT(*) FROM public.fact_matricula
 ORDER BY tabla;
 
--- V8. JOIN de la guia: Carlos Perez, curso, facultad, 2026-10-06 y 350.00.
+-- V8. Consulta integrada de matriculas.
 SELECT e.nombre_estudiante,
        f.nombre_facultad,
        c.nombre_curso,
